@@ -27,6 +27,8 @@
 
 #pragma mark - UIViewController
 
+
+
 - (void)loadView {
     UIView *mainView = [UIView new];
     
@@ -123,6 +125,35 @@
     }
 }
 
+- (void) resetWebView {
+    
+    [self.webview removeFromSuperview];
+    
+    UIWebView *newWebView = [[UIWebView alloc] init];
+    
+    newWebView.delegate = self;
+    [self.view addSubview:newWebView];
+    
+    self.webview = newWebView;
+    [self addButtonTargets];
+    
+    self.textField.text = nil;
+    [self updateButtonsAndTitle]; }
+
+- (void) addButtonTargets { for (UIButton *button in @[self.backButton, self.forwardButton, self.stopButton, self.reloadButton]) {
+    [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside]; }
+    
+    [self.backButton setTitle:NSLocalizedString(@"Back", @"Back comnmand") forState:UIControlStateNormal];
+    
+    [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward comnmand") forState:UIControlStateNormal];
+    
+    [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop comnmand") forState:UIControlStateNormal];
+    
+    [self.reloadButton setTitle:NSLocalizedString(@"Refresh", @"Reload comnmand") forState:UIControlStateNormal];
+    
+    [self addButtonTargets];
+}
+
  #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -210,7 +241,7 @@
     self.backButton.enabled = [self.webview canGoBack];
     self.forwardButton.enabled = [self.webview canGoForward];
     self.stopButton.enabled = self.frameCount > 0;
-    self.reloadButton.enabled = self.frameCount == 0;
+    self.reloadButton.enabled = self.webview.request.URL && self.frameCount == 0;
 }
 
 @end
